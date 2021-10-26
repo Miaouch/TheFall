@@ -9,7 +9,7 @@ public class PlayerBehavior : MonoBehaviour
     public float movementSpeed;
     Vector2 moveVector;
 
-    public Transform camera;
+    public Transform cam;
 
     // Start is called before the first frame update
     void Start()
@@ -25,18 +25,20 @@ public class PlayerBehavior : MonoBehaviour
     void Update()
     {
         
-        // Vector3 camP = new Vector3();
-        // camP = transform.position - camera.position;
-        // Vector3 cameraPlayer2D = new Vector3(camP.x, 0, camP.z);
-        Vector3 camDir = new Vector3(camera.forward.x, 0f, camera.forward.z);
+        Vector3 camP = new Vector3();
+        camP = transform.position - cam.position;
+        Vector3 cameraPlayer2D = new Vector3(camP.x, 0, camP.z);
+        cameraPlayer2D = cameraPlayer2D.normalized;
+        Vector3 camDir = new Vector3(cam.forward.x, 0f, cam.forward.z);
 
-        Vector3 movement =  new Vector3(moveVector.x, 0, moveVector.y) * movementSpeed;
-        // Vector3 finalMovement = new Vector3();
-        // finalMovement = (cameraPlayer2D.normalized * movevement.y) * movementSpeed;
+        
+        Vector3 movement =  cameraPlayer2D * movementSpeed;
+        movement.Scale(new Vector3(moveVector.x, 0, moveVector.y));
+        
 
         if(movement!= Vector3.zero ){ // movement.magnitude.zero => on peut faire ça aussi , magnitude c'est la longueur du vecteur
-            transform.forward = Vector3.Lerp(camDir, movement, 0.1f); // permet que le perso regarde vers là où il va, le perso se tourne doucement
-            
+            // transform.forward = Vector3.Lerp(camDir, movement, 0.1f); // permet que le perso regarde vers là où il va, le perso se tourne doucement
+            transform.forward = cameraPlayer2D;
 
             
         }
