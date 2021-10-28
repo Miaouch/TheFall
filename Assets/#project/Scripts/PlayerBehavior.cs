@@ -15,6 +15,8 @@ public class PlayerBehavior : MonoBehaviour
     private bool firstTime;
     public Transform startingPoint;
 
+    public List<Transform> rays = new List<Transform>(4);
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,43 +37,53 @@ public class PlayerBehavior : MonoBehaviour
         cameraPlayer2D = cameraPlayer2D.normalized;
         Vector3 movement =  Vector3.zero;
 
-        //création du raycast vers le bas
+        //groupe de 4 raycasts
         Vector3 direction = transform.up * -1;
-        Debug.DrawRay(transform.position, direction * hitRange, Color.red);
-        RaycastHit hit ;
-        Physics.Raycast(transform.position, direction,  out hit, hitRange);
-        
-        //if 
-        if (hit.collider != null || firstTime)
-        {
-            print("Move");
-            // règle  le mouvement de gauche droite en fonction du player et le mouvement forward backward en fonction  de la camera
-            if(moveVector.x != 0){
-                movement = transform.right * moveVector.x;
-            }
+        List<RaycastHit> raycasts = new List<RaycastHit>();
+        for(int i = 0; i < rays.Count; i++){
+            Debug.DrawRay(rays[i].position, direction * hitRange, Color.red);
+            RaycastHit hit ;
+            Physics.Raycast(rays[i].position, direction,  out hit, hitRange);
+            raycasts.Add(hit);
+        }
 
-            if(moveVector.y != 0){
-                movement = cameraPlayer2D * moveVector.y;
+        //création du raycast vers le bas
+        // Vector3 direction = transform.up * -1;
+        // Debug.DrawRay(transform.position, direction * hitRange, Color.red);
+        // RaycastHit hit ;
+        // Physics.Raycast(transform.position, direction,  out hit, hitRange);
+        
+        //vérification firstTime
+        if(firstTime){
+            if(moveVector.y != 0 || moveVector.x != 0){
+                movement = cameraPlayer2D * moveVector.y + transform.right * moveVector.x;
             }
-            movement *= movementSpeed;
             if (transform.position != startingPoint.position){ //met le firstime à false
                 firstTime =false;
             }
-        }else{
-            print("Stop");
-            if(moveVector.x != 0){
-                movement = transform.right * moveVector.x;
-            }
-
-            if(moveVector.y != 0){
-                movement = cameraPlayer2D * moveVector.y;
-            }
-            movement *= movementSpeed;
-            
         }
-    
 
         
+        
+        // limite le movement avant arrière
+        if(raycasts[0].collider == null && !firstTime && moveVector.y > 0){
+            moveVector.y = 0;      
+        }
+        if(raycasts[1].collider == null && !firstTime && moveVector.y < 0){
+            moveVector.y = 0; 
+        }    
+        
+        // limite movement gauche droite
+        if(raycasts[2].collider == null && !firstTime && moveVector.x > 0){
+            moveVector.x = 0;          
+        }    
+        if(raycasts[3].collider == null && !firstTime && moveVector.x < 0){
+            moveVector.x = 0;       
+        }    
+        // règle le mouvement forward backward en fonction  de la camera et le mouvement de gauche droite en fonction du player       
+        movement = cameraPlayer2D * moveVector.y + transform.right * moveVector.x;
+        movement *= movementSpeed;
+    
 
         if(movement!= Vector3.zero ){ // movement.magnitude.zero => on peut faire ça aussi , magnitude c'est la longueur du vecteur
             // permet que le perso regarde vers là où il va, le perso se tourne doucement
