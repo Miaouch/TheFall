@@ -8,14 +8,15 @@ public class PlayerBehavior : MonoBehaviour
     public CharacterController controller;
     public float movementSpeed;
     Vector2 moveVector;
-
     public Transform cam;
-
     public float hitRange = 0.1f;
     private bool firstTime;
     public Transform startingPoint;
-
+    private bool footRotate;
+    public Transform rayFront;
+    public SphereCaptor captor;
     public List<Transform> rays = new List<Transform>(4);
+
 
     // Start is called before the first frame update
     void Start()
@@ -48,11 +49,19 @@ public class PlayerBehavior : MonoBehaviour
         }
 
         //création du raycast vers le bas
-        // Vector3 direction = transform.up * -1;
-        // Debug.DrawRay(transform.position, direction * hitRange, Color.red);
-        // RaycastHit hit ;
-        // Physics.Raycast(transform.position, direction,  out hit, hitRange);
+        Debug.DrawRay(transform.position, direction * hitRange, Color.green);
+        RaycastHit objectHit;
+        Physics.Raycast(transform.position, direction,  out objectHit, hitRange);
+
+        //création du raycast vers front
+        Vector3 front = transform.forward;
+        Debug.DrawRay(rayFront.position, front * (hitRange * 2), Color.blue);
+        RaycastHit rayFrontHit ;
+        Physics.Raycast(rayFront.position, front,  out rayFrontHit, hitRange);
         
+        //condition pour activer la rotation
+
+
         //vérification firstTime
         if(firstTime){
             if(moveVector.y != 0 || moveVector.x != 0){
