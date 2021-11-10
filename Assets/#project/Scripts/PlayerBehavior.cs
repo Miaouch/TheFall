@@ -14,8 +14,10 @@ public class PlayerBehavior : MonoBehaviour
     public Transform startingPoint;
     private bool footRotateDown;
     public Transform rayFront;
-    public SphereCaptor captor;
+    public Transform rayFrontUnder;
+    public float durationRotation = 2f;
     public List<Transform> rays = new List<Transform>(4);
+    private bool isRotating = false;
 
 
     // Start is called before the first frame update
@@ -59,9 +61,24 @@ public class PlayerBehavior : MonoBehaviour
         Debug.DrawRay(rayFront.position, front * (hitRange * 2), Color.blue);
         RaycastHit rayFrontHit ;
         Physics.Raycast(rayFront.position, front,  out rayFrontHit, hitRange);
-        
-        //condition pour activer la rotation
 
+        //création du raycast vers front en bas
+        Vector3 under = transform.forward;
+        Debug.DrawRay(rayFrontUnder.position, front * (hitRange * 2), Color.blue);
+        RaycastHit rayFrontUndertHit ;
+        Physics.Raycast(rayFrontUnder.position, front,  out rayFrontUndertHit, hitRange);
+        
+        //condition pour activer la rotationvers le bas
+        if(rayFrontHit.collider == null && rayFrontUndertHit.collider != null && raycasts[0].collider == null){
+            print("rotate down devient true");
+            if(!isRotating){
+                StartCoroutine(RotationDown());
+                footRotateDown = true;
+
+            }
+            // transform.Rotate(90f, 0f, 0f);
+            
+        }
 
         //vérification firstTime
         if(firstTime){
@@ -79,15 +96,15 @@ public class PlayerBehavior : MonoBehaviour
         if(raycasts[0].collider == null && !firstTime && moveVector.y > 0 && !footRotateDown){
             moveVector.y = 0;      
         }
-        if(raycasts[1].collider == null && !firstTime && moveVector.y < 0 && !footRotateDown){
+        if(raycasts[1].collider == null && !firstTime && moveVector.y < 0){
             moveVector.y = 0; 
         }    
         
         // limite movement gauche droite
-        if(raycasts[2].collider == null && !firstTime && moveVector.x > 0 && !footRotateDown){
+        if(raycasts[2].collider == null && !firstTime && moveVector.x > 0){
             moveVector.x = 0;          
         }    
-        if(raycasts[3].collider == null && !firstTime && moveVector.x < 0 && !footRotateDown){
+        if(raycasts[3].collider == null && !firstTime && moveVector.x < 0){
             moveVector.x = 0;       
         }    
         // règle le mouvement forward backward en fonction  de la camera et le mouvement de gauche droite en fonction du player       
@@ -104,8 +121,26 @@ public class PlayerBehavior : MonoBehaviour
 
         controller.Move( movement * Time.deltaTime); //le joueur se déplace Move est une méthode du player controller
 
+        
 
         
     }
 
+    IEnumerator RotationDown(){
+        isRotating = true;
+        float time = 0;
+        Quaternion start = transform.rotation;
+        Quaternion r = Quaternion.Euler(start.eulerAngles + Vector3.right * 90);
+        float ratio= 0;
+        while (ratio < 1f){
+            time = Time.deltaTime;
+            ratio += time / durationRotation;
+            print(ratio);
+            transform.rotation =  Quaternion.Lerp(start, r, ratio);
+            yield return true;
+            // yield return new WaitForEndOfFrame(); c'est pareil que yield return true
+        }
+        isRotating = false;
+
+    }
 }
