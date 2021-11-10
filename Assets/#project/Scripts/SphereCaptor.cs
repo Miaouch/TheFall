@@ -8,12 +8,14 @@ public class SphereCaptor : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("platform")) {
             footRotate = true;
+            print("bonk!");
         }
     }
 
     private void OnTriggerExit(Collider other){
         if (other.CompareTag("platform")) {
             footRotate = false;
+            
         
         }
 

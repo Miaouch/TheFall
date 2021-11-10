@@ -12,7 +12,7 @@ public class PlayerBehavior : MonoBehaviour
     public float hitRange = 0.1f;
     private bool firstTime;
     public Transform startingPoint;
-    private bool footRotate;
+    private bool footRotateDown;
     public Transform rayFront;
     public SphereCaptor captor;
     public List<Transform> rays = new List<Transform>(4);
@@ -22,6 +22,7 @@ public class PlayerBehavior : MonoBehaviour
     void Start()
     {
         firstTime = true;
+        footRotateDown = false;
     }
 
     // Update is called once per frame
@@ -75,18 +76,18 @@ public class PlayerBehavior : MonoBehaviour
         
         
         // limite le movement avant arrière
-        if(raycasts[0].collider == null && !firstTime && moveVector.y > 0){
+        if(raycasts[0].collider == null && !firstTime && moveVector.y > 0 && !footRotateDown){
             moveVector.y = 0;      
         }
-        if(raycasts[1].collider == null && !firstTime && moveVector.y < 0){
+        if(raycasts[1].collider == null && !firstTime && moveVector.y < 0 && !footRotateDown){
             moveVector.y = 0; 
         }    
         
         // limite movement gauche droite
-        if(raycasts[2].collider == null && !firstTime && moveVector.x > 0){
+        if(raycasts[2].collider == null && !firstTime && moveVector.x > 0 && !footRotateDown){
             moveVector.x = 0;          
         }    
-        if(raycasts[3].collider == null && !firstTime && moveVector.x < 0){
+        if(raycasts[3].collider == null && !firstTime && moveVector.x < 0 && !footRotateDown){
             moveVector.x = 0;       
         }    
         // règle le mouvement forward backward en fonction  de la camera et le mouvement de gauche droite en fonction du player       
