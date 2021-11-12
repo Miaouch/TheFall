@@ -86,8 +86,8 @@ public class PlayerBehavior : MonoBehaviour
         Physics.Raycast(rayFrontUnder.position, front,  out rayFrontUndertHit, hitRange);
         
         //condition pour activer la rotationvers le bas
-        if(rayFrontHit.collider == null && rayFrontUndertHit.collider != null && raycasts[0].collider == null){
-            print("rotate down devient true");
+        if(rayFrontHit.collider == null && rayFrontUndertHit.collider != null && raycasts[0].collider == null && objectHit.collider == null){
+            print("rotatationdown devient true");
             if(!isRotating){
                 StartCoroutine(RotationDown());
                 
@@ -111,7 +111,9 @@ public class PlayerBehavior : MonoBehaviour
         
         // limite le movement avant arrière
         if(raycasts[0].collider == null && !firstTime && moveVector.y > 0 ){
-            moveVector.y = 0;      
+            moveVector.y = 0;
+            //faut rajouter une condition pour que ça avance un peu plus pour activer la condition de la rotation    
+            
         }
         if(raycasts[1].collider == null && !firstTime && moveVector.y < 0 && !isRotating){
             moveVector.y = 0; 
@@ -147,8 +149,10 @@ public class PlayerBehavior : MonoBehaviour
         Quaternion start = transform.rotation;
         Quaternion r = Quaternion.Euler(start.eulerAngles + Vector3.right * 90);
         float ratio = 0;
+        Vector3 basePosition = transform.position;
 
         while (ratio <1f){
+            transform.position = basePosition;
             time += Time.deltaTime;
             ratio = time / durationRotation;
             // print(ratio);
