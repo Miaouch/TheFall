@@ -91,10 +91,10 @@ public class PlayerBehavior : MonoBehaviour
         
         //condition pour activer la rotationvers le bas
         if(rayFrontHit.collider == null && rayFrontUndertHit.collider != null && raycasts[0].collider == null && objectHit.collider == null){
-            
+            // print("rotation");
             footRotateDown = true;
             if(!isRotating){
-                StartCoroutine(RotationDown());
+                StartCoroutine(RotationDown(rayFrontUndertHit));
                 
 
             }
@@ -106,7 +106,7 @@ public class PlayerBehavior : MonoBehaviour
         //vérification firstTime
         if(firstTime){
             if(moveVector.y != 0 || moveVector.x != 0){
-                movement = transform.forward * moveVector.y + transform.right * moveVector.x;
+                movement = transform.forward * moveVector.y;
                 // movement =  new Vector3(moveVector.x, 0, moveVector.y) * movementSpeed;
             }
             
@@ -121,7 +121,7 @@ public class PlayerBehavior : MonoBehaviour
             moveVector.y = 0;         
         }
         // limite le movement avant arrière
-        if(raycasts[0].collider == null && !firstTime && moveVector.y > 0 && !isRotating && footRotateDown ){
+        if(raycasts[0].collider == null && !firstTime && moveVector.y > 0 && !isRotating && footRotateDown){
             moveVector.y = 0;
             print("stop");
             //faut rajouter une condition pour que ça avance un peu plus pour activer la condition de la rotation    
@@ -140,13 +140,17 @@ public class PlayerBehavior : MonoBehaviour
         }    
         // règle le mouvement forward backward en fonction  de la camera et le mouvement de gauche droite en fonction du player       
         if(moveVector.x > 0){
-            transform.rotation = Quaternion.Euler(transform.up * 90);
-            movement = transform.forward * moveVector.x;
+            // transform.rotation = Quaternion.Euler(transform.up * 90);
+            transform.Rotate(Vector3.up * 1f);    
+        }
+        if(moveVector.x < 0){
+            // transform.rotation = Quaternion.Euler(transform.up * 90);
+            transform.Rotate(Vector3.up * -1f);    
         }
         
 
         // movement =  new Vector3(moveVector.x, 0, moveVector.y) * movementSpeed;
-        movement = transform.forward * moveVector.y;// + transform.right * moveVector.x;
+        movement = transform.forward * moveVector.y;// + transform.forward * moveVector.x;
         movement *= movementSpeed;
     
 
@@ -161,24 +165,32 @@ public class PlayerBehavior : MonoBehaviour
             
         }
         
-     //transform.forward = cam.forward;
-        
+        // print("rotationDown : " + footRotateDown);
+        // print("isRotating : " +isRotating);
+        // if(rayFrontUndertHit.collider != null){
+        //     Vector3 result = rayFrontUndertHit.normal;
+        //     print(result * -1); 
+        // }
     }
 
-    IEnumerator RotationDown(){
+    IEnumerator RotationDown(RaycastHit rayFrontUndertHit){
+        transform.forward = rayFrontUndertHit.normal * -1;
+
         isRotating = true;
         float time = 0;
-        Quaternion start = transform.rotation;
+        Quaternion start = transform.localRotation;
         Quaternion r = Quaternion.Euler(start.eulerAngles + Vector3.right * 90);
+        
         float ratio = 0;
         Vector3 basePosition = transform.position;
+
 
         while (ratio <1f){
             transform.position = basePosition;
             time += Time.deltaTime;
             ratio = time / durationRotation;
             // print(ratio);
-            transform.rotation =  Quaternion.Lerp(start, r, ratio);
+            transform.localRotation =  Quaternion.Lerp(start, r, ratio);
             //transform.Rotate(Vector3.right * speedRotation * Time.deltaTime, Space.Self);
             //Quaternion angulu = Quaternion.Lerp(start, r, ratio);
             // transform.Rotate(Vector3.right * 90, Space.Self);
