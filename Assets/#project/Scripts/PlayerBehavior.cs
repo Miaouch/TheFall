@@ -27,7 +27,7 @@ public class PlayerBehavior : MonoBehaviour
     void Start()
     {
         firstTime = true;
-        footRotateDown = false;
+        // footRotateDown = false;
     }
 
     // Update is called once per frame
@@ -91,15 +91,14 @@ public class PlayerBehavior : MonoBehaviour
         
         //condition pour activer la rotationvers le bas
         if(rayFrontHit.collider == null && rayFrontUndertHit.collider != null && raycasts[0].collider == null && objectHit.collider == null){
-            // print("rotation");
-            footRotateDown = true;
+            print("rotation");
+            // footRotateDown = true;
             if(!isRotating){
                 StartCoroutine(RotationDown(rayFrontUndertHit));
                 
 
             }
             // transform.Rotate(90f, 0f, 0f);
-            footRotateDown = false;
             
         }
 
@@ -121,7 +120,7 @@ public class PlayerBehavior : MonoBehaviour
             moveVector.y = 0;         
         }
         // limite le movement avant arrière
-        if(raycasts[0].collider == null && !firstTime && moveVector.y > 0 && !isRotating && footRotateDown){
+        if(raycasts[0].collider == null && !firstTime && moveVector.y > 0 && !isRotating){
             moveVector.y = 0;
             print("stop");
             //faut rajouter une condition pour que ça avance un peu plus pour activer la condition de la rotation    
@@ -139,6 +138,7 @@ public class PlayerBehavior : MonoBehaviour
             moveVector.x = 0;       
         }    
         // règle le mouvement forward backward en fonction  de la camera et le mouvement de gauche droite en fonction du player       
+        
         if(moveVector.x > 0){
             // transform.rotation = Quaternion.Euler(transform.up * 90);
             transform.Rotate(Vector3.up * 1f);    
@@ -147,13 +147,11 @@ public class PlayerBehavior : MonoBehaviour
             // transform.rotation = Quaternion.Euler(transform.up * 90);
             transform.Rotate(Vector3.up * -1f);    
         }
-        
 
         // movement =  new Vector3(moveVector.x, 0, moveVector.y) * movementSpeed;
         movement = transform.forward * moveVector.y;// + transform.forward * moveVector.x;
         movement *= movementSpeed;
     
-
         if(movement!= Vector3.zero ){ // movement.magnitude.zero => on peut faire ça aussi , magnitude c'est la longueur du vecteur
             // permet que le perso regarde vers là où il va, le perso se tourne doucement
             // transform.forward = cameraPlayer2D;
@@ -161,11 +159,9 @@ public class PlayerBehavior : MonoBehaviour
             // transform.forward = Vector3.Lerp(transform.forward, movement, 0.1f);
             
             controller.Move( movement * Time.deltaTime); //le joueur se déplace Move est une méthode du player controller
-
-            
         }
         
-        // print("rotationDown : " + footRotateDown);
+        print("rotationDown : " + footRotateDown);
         // print("isRotating : " +isRotating);
         // if(rayFrontUndertHit.collider != null){
         //     Vector3 result = rayFrontUndertHit.normal;
@@ -190,6 +186,7 @@ public class PlayerBehavior : MonoBehaviour
             time += Time.deltaTime;
             ratio = time / durationRotation;
             // print(ratio);
+            
             transform.localRotation =  Quaternion.Lerp(start, r, ratio);
             //transform.Rotate(Vector3.right * speedRotation * Time.deltaTime, Space.Self);
             //Quaternion angulu = Quaternion.Lerp(start, r, ratio);
@@ -200,6 +197,7 @@ public class PlayerBehavior : MonoBehaviour
         }
         
         isRotating = false;
+        
 
     }
 
