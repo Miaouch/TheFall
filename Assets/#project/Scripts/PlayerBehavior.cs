@@ -14,10 +14,12 @@ public class PlayerBehavior : MonoBehaviour
     private bool firstTime;
     public Transform rayFront;
     public Transform rayFrontUnder;
+    public Transform rayForward;
     public float durationRotation = 2f;
     public List<Transform> rays = new List<Transform>(4);
     public bool isRotating = false;
     public bool moveFurther;
+    public bool interactions;
 
 
     public Transform pivot;
@@ -38,6 +40,14 @@ public class PlayerBehavior : MonoBehaviour
         // Debug.Log(moveVector);
 
     }
+
+    public void Interactions(InputAction.CallbackContext context){
+        if(context.performed && interactions){ //performed indique que l'action est en train de se faire
+            Debug.Log("Pivot activated");
+        }else if(context.canceled && interactions){
+            Debug.Log("Pivot desactivated");
+        }
+    }
     void Update()
     {
         //groupe de 4 raycasts
@@ -51,12 +61,33 @@ public class PlayerBehavior : MonoBehaviour
             raycasts.Add(hit);
         }
 
+
+
         //création du raycast vers le bas
         RaycastHit objectHit;
         Color e = Color.red;
         if(Physics.Raycast(transform.position, direction, out objectHit, hitRange)){
             e = Color.green; }
         Debug.DrawRay(transform.position, direction * hitRange, e);
+
+        //création du raycast vers le forward pour test si plateform plane
+        RaycastHit forwardHit;
+        Color f = Color.red;
+        if(Physics.Raycast(rayForward.position, direction, out forwardHit, hitRange)){
+            f = Color.green; }
+        Debug.DrawRay(rayForward.position, direction * hitRange, f);
+        if(forwardHit.collider != null || firstTime){
+            //activate la possibilité d'intéragir
+            interactions = true;
+            List<GameObject> listPivots = new List<GameObject>();
+            listPivots = objectHit.transform.gameObject.GetComponent<PlateformBehavior>().pivots;
+            // for(int i = 0; i < listPivots.Count; i++){
+            //     listPivots[i].SetActive(true);
+            // }
+            
+        }else{
+            interactions = false;
+        }
 
         Vector3 camP = new Vector3();
         camP = transform.position - cam.position;
