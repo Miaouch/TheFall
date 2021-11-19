@@ -14,7 +14,7 @@ public class PlayerBehavior : MonoBehaviour
     private bool firstTime;
     public Transform rayFront;
     public Transform rayFrontUnder;
-    public Transform rayForward;
+    // public Transform rayForward;
     public float durationRotation = 2f;
     public List<Transform> rays = new List<Transform>(4);
     public bool isRotating = false;
@@ -48,6 +48,33 @@ public class PlayerBehavior : MonoBehaviour
             Debug.Log("Pivot desactivated");
         }
     }
+    void OnTriggerEnter(Collider other)
+    {
+        print("Rotation ?");
+        if (other.CompareTag("RotationTrigger") && !isRotating)
+        {
+            StartCoroutine(RotateAroundTheEdge(other.transform));
+        }
+    }
+    IEnumerator RotateAroundTheEdge(Transform pivotPoint) {
+
+        Plane plane = new Plane(pivotPoint.up - pivotPoint.right, pivotPoint.position);
+        Ray downRay = new Ray(transform.position, -transform.up);
+
+        float dist;
+        plane.Raycast(downRay, out dist);
+
+        Vector3 rotationPoint = downRay.GetPoint(dist);
+
+        float startTime = Time.time;
+        isRotating = true;
+        while (Time.time <= durationRotation + startTime) {
+            transform.RotateAround(rotationPoint, pivotPoint.forward, -90 / durationRotation * Time.deltaTime);
+            yield return true;
+        }
+
+        isRotating = false;
+    }
     void Update()
     {
         //groupe de 4 raycasts
@@ -71,23 +98,23 @@ public class PlayerBehavior : MonoBehaviour
         Debug.DrawRay(transform.position, direction * hitRange, e);
 
         //création du raycast vers le forward pour test si plateform plane
-        RaycastHit forwardHit;
-        Color f = Color.red;
-        if(Physics.Raycast(rayForward.position, direction, out forwardHit, hitRange)){
-            f = Color.green; }
-        Debug.DrawRay(rayForward.position, direction * hitRange, f);
-        if(forwardHit.collider != null || firstTime){
-            //activate la possibilité d'intéragir
-            interactions = true;
-            List<GameObject> listPivots = new List<GameObject>();
-            listPivots = objectHit.transform.gameObject.GetComponent<PlateformBehavior>().pivots;
-            // for(int i = 0; i < listPivots.Count; i++){
-            //     listPivots[i].SetActive(true);
-            // }
+        // RaycastHit forwardHit;
+        // Color f = Color.red;
+        // if(Physics.Raycast(rayForward.position, direction, out forwardHit, hitRange)){
+        //     f = Color.green; }
+        // Debug.DrawRay(rayForward.position, direction * hitRange, f);
+        // if(forwardHit.collider != null || firstTime){
+        //     //activate la possibilité d'intéragir
+        //     interactions = true;
+        //     List<GameObject> listPivots = new List<GameObject>();
+        //     // listPivots = objectHit.transform.gameObject.GetComponent<PlateformBehavior>().pivots;
+        //     // for(int i = 0; i < listPivots.Count; i++){
+        //     //     listPivots[i].SetActive(true);
+        //     // }
             
-        }else{
-            interactions = false;
-        }
+        // }else{
+        //     interactions = false;
+        // }
 
         Vector3 camP = new Vector3();
         camP = transform.position - cam.position;
@@ -132,19 +159,19 @@ public class PlayerBehavior : MonoBehaviour
         
 
         //condition pour activer la rotationvers le bas
-        if (rayFrontHit.collider == null && rayFrontUndertHit.collider != null )
-        {
-            print("rotation");
-            moveFurther = true;
-            if (!isRotating && objectHit.collider == null)
-            {
-                StartCoroutine(RotationDown(rayFrontUndertHit));
+        // if (rayFrontHit.collider == null && rayFrontUndertHit.collider != null )
+        // {
+        //     print("rotation");
+        //     moveFurther = true;
+        //     if (!isRotating && objectHit.collider == null)
+        //     {
+        //         StartCoroutine(RotationDown(rayFrontUndertHit));
 
-            }
-            // transform.Rotate(90f, 0f, 0f);
-        }else{
-            moveFurther = false;
-        }
+        //     }
+        //     // transform.Rotate(90f, 0f, 0f);
+        // }else{
+        //     moveFurther = false;
+        // }
 
         //vérification firstTime
         if (firstTime)
@@ -218,52 +245,52 @@ public class PlayerBehavior : MonoBehaviour
 
 
         // print("isRotating : " +isRotating);
-        if(rayFrontUndertHit.collider != null){
-            Vector3 result = rayFrontUndertHit.normal;
-            print(result * -1); 
-        }
+        // if(rayFrontUndertHit.collider != null){
+        //     Vector3 result = rayFrontUndertHit.normal;
+        //     print(result * -1); 
+        // }
     }
 
-    IEnumerator RotationDown(RaycastHit rayFrontUndertHit)
-    {
-        Vector3 normal = rayFrontUndertHit.normal * -1;
-        transform.forward = normal;
-        Debug.DrawRay(rayFrontUndertHit.transform.position, normal * 100, Color.cyan, 10f);
+    // IEnumerator RotationDown(RaycastHit rayFrontUndertHit)
+    // {
+    //     Vector3 normal = rayFrontUndertHit.normal * -1;
+    //     transform.forward = normal;
+    //     Debug.DrawRay(rayFrontUndertHit.transform.position, normal * 100, Color.cyan, 10f);
 
-        isRotating = true;
-        float time = 0;
-        // Quaternion start = transform.localRotation;
+    //     isRotating = true;
+    //     float time = 0;
+    //     // Quaternion start = transform.localRotation;
         
-        // Quaternion r = Quaternion.Euler(start.eulerAngles + Vector3.right * 90);
-        Vector3 start = transform.up;
-        Vector3 end = normal;
+    //     // Quaternion r = Quaternion.Euler(start.eulerAngles + Vector3.right * 90);
+    //     Vector3 start = transform.up;
+    //     Vector3 end = normal;
 
-        float ratio = 0;
-        Vector3 basePosition = transform.position;
-        transform.up = normal;
+    //     float ratio = 0;
+    //     Vector3 basePosition = transform.position;
+    //     transform.up = normal;
 
-        while (ratio < 1f && false)
-        {
-            transform.position = basePosition;
-            time += Time.deltaTime;
-            ratio = time / durationRotation;
-            // print(ratio);
+    //     while (ratio < 1f && false)
+    //     {
+    //         transform.position = basePosition;
+    //         time += Time.deltaTime;
+    //         ratio = time / durationRotation;
+    //         // print(ratio);
 
-            // transform.localRotation =  Quaternion.Lerp(start, end, ratio);
-            Debug.DrawRay(transform.position, Vector3.Lerp(start, end, ratio) * 100, Color.yellow,1f);
-            transform.up = Vector3.Lerp(start, end, ratio);
-            //transform.Rotate(Vector3.right * speedRotation * Time.deltaTime, Space.Self);
-            //Quaternion angulu = Quaternion.Lerp(start, r, ratio);
-            // transform.Rotate(Vector3.right * 90, Space.Self);
+    //         // transform.localRotation =  Quaternion.Lerp(start, end, ratio);
+    //         Debug.DrawRay(transform.position, Vector3.Lerp(start, end, ratio) * 100, Color.yellow,1f);
+    //         transform.up = Vector3.Lerp(start, end, ratio);
+    //         //transform.Rotate(Vector3.right * speedRotation * Time.deltaTime, Space.Self);
+    //         //Quaternion angulu = Quaternion.Lerp(start, r, ratio);
+    //         // transform.Rotate(Vector3.right * 90, Space.Self);
 
-            yield return true;
-            // yield return new WaitForEndOfFrame(); c'est pareil que yield return true
-        }
+    //         yield return true;
+    //         // yield return new WaitForEndOfFrame(); c'est pareil que yield return true
+    //     }
 
-        isRotating = false;
+    //     isRotating = false;
 
 
-    }
+    // }
 
 
 }

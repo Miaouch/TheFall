@@ -1288,7 +1288,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 776788811}
-  m_LocalRotation: {x: -0.000000013165537, y: 0.97788423, z: -0.20914707, w: -0.00000006155655}
+  m_LocalRotation: {x: -0.00000000511868, y: 0.97788423, z: -0.20914707, w: -0.00000002393281}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1352,11 +1352,11 @@ GameObject:
   - component: {fileID: 835655684}
   m_Layer: 0
   m_Name: Trigger4
-  m_TagString: Untagged
+  m_TagString: RotationTrigger
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &835655684
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1368,7 +1368,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 5, y: 1, z: 0.3}
+  m_Size: {x: 5, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &835655685
 Transform:
@@ -1528,11 +1528,11 @@ GameObject:
   - component: {fileID: 965074977}
   m_Layer: 0
   m_Name: Trigger3
-  m_TagString: Untagged
+  m_TagString: RotationTrigger
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &965074977
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1544,7 +1544,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 5, y: 1, z: 0.3}
+  m_Size: {x: 1, y: 1, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &965074978
 Transform:
@@ -1553,13 +1553,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 965074976}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1773614746}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1108321457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,7 +1656,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1121875138}
-  m_LocalRotation: {x: -0.0000000020702868, y: 0.99875855, z: -0.0498137, w: -0.000000041508994}
+  m_LocalRotation: {x: -0.0000000022845654, y: 0.99875855, z: -0.0498137, w: -0.00000004580525}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2424,7 +2424,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1454114603}
-  m_LocalRotation: {x: -0.000000027561757, y: 0.96541387, z: -0.26072225, w: 0.000000017657776}
+  m_LocalRotation: {x: 0.000000004768699, y: 0.96541387, z: -0.26072225, w: -0.00000010205693}
   m_LocalPosition: {x: 0.0000004371139, y: 1.65, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -2501,6 +2501,7 @@ MonoBehaviour:
   - {fileID: 32367281}
   isRotating: 0
   moveFurther: 0
+  interactions: 0
   pivot: {fileID: 1454820578}
 --- !u!114 &1454820580
 MonoBehaviour:
@@ -2543,6 +2544,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 324c1264-8b34-475e-b506-92288d81826d
     m_ActionName: Gameplay/Movement[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 56c5aaf8-9a06-4543-bc86-657953d4e0ee
+    m_ActionName: Gameplay/Interactions[/Keyboard/shift]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay
@@ -2559,7 +2564,7 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 0.5
+  m_Height: 2
   m_Radius: 0.5
   m_SlopeLimit: 90
   m_StepOffset: 0.2
