@@ -19,9 +19,18 @@ public class PlateformBehavior : MonoBehaviour
     
     void Update()
     {
+        Vector3 direction = transform.up * -1;
+        float hitRange = 1f;
+        RaycastHit objectHit;
+        Color e = Color.red;
+        if(Physics.Raycast(transform.position, direction, out objectHit, hitRange)){
+            e = Color.green; }
+        Debug.DrawRay(transform.position, direction * hitRange, e);
+
+
         // pivotsTrigger.rotation = player.rotation;
         pivotsTrigger.eulerAngles = new Vector3(player.rotation.eulerAngles.x, (Mathf.Round(player.rotation.eulerAngles.y / increment) * increment), player.rotation.eulerAngles.z);
-
+        if(objectHit.normal = Vector3.up);
     }
 
     
