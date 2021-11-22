@@ -19,8 +19,6 @@ public class PlateformBehavior : MonoBehaviour
     void Start()
     {
         activatedTrigger = false;
-        Mesh mesh = cube.GetComponent<MeshFilter>().mesh;
-        Vector3[] normals = mesh.normals;
     }
 
     
@@ -35,8 +33,8 @@ public class PlateformBehavior : MonoBehaviour
         if(Physics.Raycast(player.transform.position, direction, out objectHit, hitRange)){
             e = Color.green; }
         Debug.DrawRay(player.transform.position, direction * hitRange, e);
-        if(objectHit.transform.gameObject == cube && !isRotating){
-            print("prout");
+        if(!isRotating && objectHit.transform.gameObject == cube){
+            // print("prout");
             activatedTrigger = true;
         } else{
             activatedTrigger = false;
