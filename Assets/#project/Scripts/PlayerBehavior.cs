@@ -58,6 +58,7 @@ public class PlayerBehavior : MonoBehaviour
     }
     IEnumerator RotateAroundTheEdge(Transform pivotPoint) {
 
+        
         Plane plane = new Plane(pivotPoint.up - pivotPoint.right, pivotPoint.position);
         Ray downRay = new Ray(transform.position, -transform.up);
 
@@ -193,6 +194,7 @@ public class PlayerBehavior : MonoBehaviour
         if (isRotating)
         {
             moveVector.y = 0;
+            moveVector.x = 0;
         }
         // limite le movement avant arrière
         if (raycasts[0].collider == null && !firstTime && moveVector.y > 0 && !isRotating && !moveFurther)
