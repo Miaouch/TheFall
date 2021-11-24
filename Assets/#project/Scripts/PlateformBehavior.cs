@@ -49,7 +49,7 @@ public class PlateformBehavior : MonoBehaviour
         
         pivotsTrigger.localEulerAngles = new Vector3(0, (Mathf.Round(angleRotation / increment) * increment), 0);
         
-        print($"localRotation {player.localRotation.eulerAngles}");
+        // print($"localRotation {player.localRotation.eulerAngles}");
         
 
     }

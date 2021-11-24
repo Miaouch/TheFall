@@ -14,12 +14,15 @@ public class PlayerBehavior : MonoBehaviour
     private bool firstTime;
     public Transform rayFront;
     public Transform rayFrontUnder;
-    // public Transform rayForward;
+    public Transform rayForward;
     public float durationRotation = 2f;
     public List<Transform> rays = new List<Transform>(4);
     public bool isRotating = false;
     public bool moveFurther;
     public bool interactions;
+    public bool rotationBas;
+    public bool rotationHaut;
+    public Transform head;
 
 
     public Transform pivot;
@@ -50,31 +53,61 @@ public class PlayerBehavior : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        print("Rotation ?");
-        if (other.CompareTag("RotationTrigger") && !isRotating)
+        // print("Rotation ?");
+        if (other.CompareTag("RotationTrigger") && !isRotating && (rotationBas || rotationHaut))
         {
             StartCoroutine(RotateAroundTheEdge(other.transform));
         }
     }
     IEnumerator RotateAroundTheEdge(Transform pivotPoint) {
 
-        
-        Plane plane = new Plane(pivotPoint.up - pivotPoint.right, pivotPoint.position);
-        Ray downRay = new Ray(transform.position, -transform.up);
+        if(rotationBas){
+            Plane plane = new Plane(pivotPoint.up - pivotPoint.right, pivotPoint.position);
+            Ray downRay = new Ray(transform.position, -transform.up);
 
-        float dist;
-        plane.Raycast(downRay, out dist);
+            float dist;
+            plane.Raycast(downRay, out dist);
 
-        Vector3 rotationPoint = downRay.GetPoint(dist);
+            Vector3 rotationPoint = downRay.GetPoint(dist);
 
-        float startTime = Time.time;
-        isRotating = true;
-        while (Time.time <= durationRotation + startTime) {
-            transform.RotateAround(rotationPoint, pivotPoint.forward, -90 / durationRotation * Time.deltaTime);
-            yield return true;
+            float startTime = Time.time;
+            isRotating = true;
+            while (Time.time <= durationRotation + startTime) {
+                transform.RotateAround(rotationPoint, pivotPoint.forward, -90 / durationRotation * Time.deltaTime);
+                yield return true;
+            }
+
+            isRotating = false;
+
+        }
+        if(rotationHaut){
+            Plane plane = new Plane(pivotPoint.up - pivotPoint.right, pivotPoint.position);
+            Ray downRay = new Ray(transform.position, -transform.up);
+
+            float dist;
+            plane.Raycast(downRay, out dist);
+
+            Vector3 rotationPoint = downRay.GetPoint(dist);
+            // Debug.DrawRay(rotationPoint, Vector3.forward * 100, Color.red, 20f);
+            // transform.position += Vector3.up* 0.5f;
+            Vector3 start = head.position;
+            Vector3 end = start + head.transform.up * -5;
+            float startTime = Time.time;
+            isRotating = true;
+            float time = 0f;
+            // transform.up = Vector3.Lerp(start, end, 2f);
+            while (Time.time <= durationRotation + startTime) {
+                time+= Time.deltaTime;
+                transform.RotateAround(head.position, pivotPoint.forward, 90 / durationRotation * Time.deltaTime);
+                // transform.up = Vector3.Lerp(start, end, 2f);
+                // head.up = Vector3.Lerp(start, end, time/durationRotation);
+                yield return true;
+            }
+
+            // transform.position = transform.up * 1;
+            isRotating = false;
         }
 
-        isRotating = false;
     }
     void Update()
     {
@@ -99,23 +132,22 @@ public class PlayerBehavior : MonoBehaviour
         Debug.DrawRay(transform.position, direction * hitRange, e);
 
         //création du raycast vers le forward pour test si plateform plane
-        // RaycastHit forwardHit;
-        // Color f = Color.red;
-        // if(Physics.Raycast(rayForward.position, direction, out forwardHit, hitRange)){
-        //     f = Color.green; }
-        // Debug.DrawRay(rayForward.position, direction * hitRange, f);
-        // if(forwardHit.collider != null || firstTime){
-        //     //activate la possibilité d'intéragir
-        //     interactions = true;
-        //     List<GameObject> listPivots = new List<GameObject>();
-        //     // listPivots = objectHit.transform.gameObject.GetComponent<PlateformBehavior>().pivots;
-        //     // for(int i = 0; i < listPivots.Count; i++){
-        //     //     listPivots[i].SetActive(true);
-        //     // }
-            
-        // }else{
-        //     interactions = false;
-        // }
+        RaycastHit forwardHit;
+        Color f = Color.red;
+        if(Physics.Raycast(rayForward.position, direction, out forwardHit, hitRange)){
+            f = Color.green; }
+        Debug.DrawRay(rayForward.position, direction * hitRange, f);
+        if(forwardHit.collider != null || firstTime){
+            //activate la possibilité d'intéragir
+            interactions = true;
+            List<GameObject> listPivots = new List<GameObject>();
+            // listPivots = objectHit.transform.gameObject.GetComponent<PlateformBehavior>().pivots;
+            // for(int i = 0; i < listPivots.Count; i++){
+            //     listPivots[i].SetActive(true);
+            // }   
+        }else{
+            interactions = false;
+        }
 
         Vector3 camP = new Vector3();
         camP = transform.position - cam.position;
@@ -153,26 +185,34 @@ public class PlayerBehavior : MonoBehaviour
         Vector3 under = transform.forward;
         RaycastHit rayFrontUndertHit;
         Color d = Color.red;
-        if(Physics.Raycast(rayFrontUnder.position, front, out rayFrontUndertHit, hitRange))
+        if(Physics.Raycast(rayFrontUnder.position, front, out rayFrontUndertHit,1.5f))
         { d=Color.green;}
-        Debug.DrawRay(rayFrontUnder.position, front * (hitRange * 2), d);
+        Debug.DrawRay(rayFrontUnder.position, front * (1.5f * 2), d);
 
         
 
         //condition pour activer la rotationvers le bas
-        // if (rayFrontHit.collider == null && rayFrontUndertHit.collider != null )
-        // {
-        //     print("rotation");
+        if (rayFrontHit.collider == null && rayFrontUndertHit.collider != null )
+        {
+
+            rotationBas = true;
         //     moveFurther = true;
         //     if (!isRotating && objectHit.collider == null)
-        //     {
+            // {
         //         StartCoroutine(RotationDown(rayFrontUndertHit));
 
         //     }
         //     // transform.Rotate(90f, 0f, 0f);
-        // }else{
-        //     moveFurther = false;
-        // }
+        }else{
+            rotationBas = false;
+        }
+
+        //condition pour activer la rotationvers le haut
+        if(rayFrontHit.collider != null && rayFrontUndertHit.collider == null ){
+            rotationHaut = true;
+        }else {
+            rotationHaut = false;
+        }
 
         //vérification firstTime
         if (firstTime)
@@ -236,11 +276,7 @@ public class PlayerBehavior : MonoBehaviour
         movement *= movementSpeed;
 
         if (movement != Vector3.zero)
-        { // movement.magnitude.zero => on peut faire ça aussi , magnitude c'est la longueur du vecteur
-          // permet que le perso regarde vers là où il va, le perso se tourne doucement
-          // transform.forward = cameraPlayer2D;
-
-            // transform.forward = Vector3.Lerp(transform.forward, movement, 0.1f);
+        { 
 
             controller.Move(movement * Time.deltaTime); //le joueur se déplace Move est une méthode du player controller
         }
