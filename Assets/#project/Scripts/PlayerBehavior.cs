@@ -88,18 +88,15 @@ public class PlayerBehavior : MonoBehaviour
             plane.Raycast(downRay, out dist);
 
             Vector3 rotationPoint = downRay.GetPoint(dist);
-            // Debug.DrawRay(rotationPoint, Vector3.forward * 100, Color.red, 20f);
-            // transform.position += Vector3.up* 0.5f;
-            Vector3 start = head.position;
-            Vector3 end = start + head.transform.up * -5;
+            // Vector3 start = head.position;
+            // Vector3 end = start + head.transform.up * -5;
             float startTime = Time.time;
             isRotating = true;
             float time = 0f;
-            // transform.up = Vector3.Lerp(start, end, 2f);
+            
             while (Time.time <= durationRotation + startTime) {
                 time+= Time.deltaTime;
                 transform.RotateAround(head.position, pivotPoint.forward, 90 / durationRotation * Time.deltaTime);
-                // transform.up = Vector3.Lerp(start, end, 2f);
                 // head.up = Vector3.Lerp(start, end, time/durationRotation);
                 yield return true;
             }
