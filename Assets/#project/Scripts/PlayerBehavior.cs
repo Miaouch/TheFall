@@ -23,10 +23,15 @@ public class PlayerBehavior : MonoBehaviour
     public bool interactions;
     public bool rotationBas;
     public bool rotationHaut;
+    public bool activePivot;
+    public bool activeOverlay;
+    public bool cubeCreated;
     public Transform head;
+    public GameObject instantiateCube;
+    public GameObject cubeOverlay;
 
 
-    public Transform pivot;
+
 
 
 
@@ -34,7 +39,9 @@ public class PlayerBehavior : MonoBehaviour
     void Start()
     {
         firstTime = true;
-
+        interactions = false;
+        activeOverlay = false;
+        cubeCreated = false;
     }
 
     // Update is called once per frame
@@ -46,10 +53,17 @@ public class PlayerBehavior : MonoBehaviour
     }
 
     public void Interactions(InputAction.CallbackContext context){
-        if(context.performed && interactions){ //performed indique que l'action est en train de se faire
-            Debug.Log("Pivot activated");
-        }else if(context.canceled && interactions){
-            Debug.Log("Pivot desactivated");
+        if(context.performed && interactions && !activePivot){ //performed indique que l'action est en train de se faire
+            activePivot = true;
+            Debug.Log(activePivot);
+            // activeOverlay = true;
+        }
+        // else if(context.canceled && interactions){
+        //     activeOverlay = false;
+        // }
+        else if(context.performed && activePivot){
+            activePivot = false;
+            Debug.Log(activePivot);
         }
     }
     void OnTriggerEnter(Collider other)
@@ -152,20 +166,31 @@ public class PlayerBehavior : MonoBehaviour
         //création du raycast vers le forward pour test si plateform plane
         RaycastHit forwardHit;
         Color f = Color.red;
+        
         if(Physics.Raycast(rayForward.position, direction, out forwardHit, hitRange)){
-            f = Color.green; }
-        Debug.DrawRay(rayForward.position, direction * hitRange, f);
-        if(forwardHit.collider != null || firstTime){
-            //activate la possibilité d'intéragir
+            f = Color.green; 
             interactions = true;
-            List<GameObject> listPivots = new List<GameObject>();
+        }else{
+            interactions = false;
+
+        }
+        if(activePivot && !cubeCreated){
+            print("pop");
+            cubeOverlay = Instantiate(instantiateCube, forwardHit.transform.position, Quaternion.identity);
+            cubeCreated = true;
+        }else if(!activePivot && cubeCreated){
+            Destroy(cubeOverlay);
+            cubeCreated = false;
+        }
+        
+        Debug.DrawRay(rayForward.position, direction * hitRange, f);
+            //activate la possibilité d'intéragir
+            // List<GameObject> listPivots = new List<GameObject>();
             // listPivots = objectHit.transform.gameObject.GetComponent<PlateformBehavior>().pivots;
             // for(int i = 0; i < listPivots.Count; i++){
             //     listPivots[i].SetActive(true);
-            // }   
-        }else{
-            interactions = false;
-        }
+ 
+        
 
         Vector3 camP = new Vector3();
         camP = transform.position - cam.position;
@@ -212,15 +237,7 @@ public class PlayerBehavior : MonoBehaviour
         //condition pour activer la rotationvers le bas
         if (rayFrontHit.collider == null && rayFrontUndertHit.collider != null )
         {
-
             rotationBas = true;
-        //     moveFurther = true;
-        //     if (!isRotating && objectHit.collider == null)
-            // {
-        //         StartCoroutine(RotationDown(rayFrontUndertHit));
-
-        //     }
-        //     // transform.Rotate(90f, 0f, 0f);
         }else{
             rotationBas = false;
         }
@@ -232,6 +249,7 @@ public class PlayerBehavior : MonoBehaviour
             rotationHaut = false;
         }
 
+
         //vérification firstTime
         if (firstTime)
         {
@@ -240,14 +258,11 @@ public class PlayerBehavior : MonoBehaviour
                 movement = transform.forward * moveVector.y;
                 // movement =  new Vector3(moveVector.x, 0, moveVector.y) * movementSpeed;
             }
-
             if (transform.position != startingPoint.position)
             { //met le firstime à false
                 firstTime = false;
             }
         }
-
-
 
         if (isRotating)
         {
