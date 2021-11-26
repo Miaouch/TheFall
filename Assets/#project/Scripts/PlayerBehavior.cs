@@ -15,6 +15,7 @@ public class PlayerBehavior : MonoBehaviour
     public Transform rayFront;
     public Transform rayFrontUnder;
     public Transform rayForward;
+    public Transform rayCenter;
     public float durationRotation = 2f;
     public List<Transform> rays = new List<Transform>(4);
     public bool isRotating = false;
@@ -56,10 +57,10 @@ public class PlayerBehavior : MonoBehaviour
         // print("Rotation ?");
         if (other.CompareTag("RotationTrigger") && !isRotating && (rotationBas || rotationHaut))
         {
-            StartCoroutine(RotateAroundTheEdge(other.transform));
+            StartCoroutine(RotateAroundTheEdge(other.transform, rayCenter));
         }
     }
-    IEnumerator RotateAroundTheEdge(Transform pivotPoint) {
+    IEnumerator RotateAroundTheEdge(Transform pivotPoint, Transform rayCenter) {
 
         if(rotationBas){
             Plane plane = new Plane(pivotPoint.up - pivotPoint.right, pivotPoint.position);
@@ -78,6 +79,11 @@ public class PlayerBehavior : MonoBehaviour
             }
 
             isRotating = false;
+            RaycastHit centerHit;
+            if(Physics.Raycast(rayCenter.position, transform.up * -1, out centerHit, 1.5f)){
+                transform.position = centerHit.point + (transform.up * 0.1f);
+            }
+            
 
         }
         if(rotationHaut){
@@ -103,6 +109,10 @@ public class PlayerBehavior : MonoBehaviour
 
             // transform.position = transform.up * 1;
             isRotating = false;
+            RaycastHit centerHit;
+            if(Physics.Raycast(rayCenter.position, transform.up * -1, out centerHit, 1.5f)){
+                transform.position = centerHit.point + (transform.up * 0.1f);
+            }
         }
 
     }
@@ -113,9 +123,12 @@ public class PlayerBehavior : MonoBehaviour
         List<RaycastHit> raycasts = new List<RaycastHit>();
         for (int i = 0; i < rays.Count; i++)
         {
-            Debug.DrawRay(rays[i].position, direction * hitRange, Color.red);
             RaycastHit hit;
-            Physics.Raycast(rays[i].position, direction, out hit, hitRange);
+            Color g = Color.red;
+            if(Physics.Raycast(rays[i].position, direction, out hit, hitRange)){
+                g = Color.green;
+            }
+            Debug.DrawRay(rays[i].position, direction * hitRange, g);
             raycasts.Add(hit);
         }
 
@@ -127,6 +140,14 @@ public class PlayerBehavior : MonoBehaviour
         if(Physics.Raycast(transform.position, direction, out objectHit, hitRange)){
             e = Color.green; }
         Debug.DrawRay(transform.position, direction * hitRange, e);
+
+        //création du raycast center
+        RaycastHit centerHit;
+        Color h = Color.red;
+        if(Physics.Raycast(rayCenter.position, direction, out centerHit, hitRange)){
+            h = Color.green;
+        }
+        Debug.DrawRay(rayCenter.position, direction * hitRange, h);
 
         //création du raycast vers le forward pour test si plateform plane
         RaycastHit forwardHit;
