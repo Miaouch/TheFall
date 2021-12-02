@@ -205,7 +205,7 @@ public class PlayerBehavior : MonoBehaviour
         }else if(!activePivot && cubeCreated){
             Destroy(cubeOverlay);
             cubeCreated = false;
-            plateformBox1.GetComponent<BoxCollider>().enabled = true;
+            // plateformBox1.GetComponent<BoxCollider>().enabled = true;
         }
 
         if(cubeCreated){
