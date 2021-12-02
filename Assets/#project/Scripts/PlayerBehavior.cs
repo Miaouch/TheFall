@@ -30,6 +30,10 @@ public class PlayerBehavior : MonoBehaviour
     public GameObject instantiateCube;
     public GameObject cubeOverlay;
     public Transform cubeOverlayPivot;
+    public bool rototoUp;
+    public bool rototoDown;
+    public bool rototoLeft;
+    public bool rototoRight;
 
 
 
@@ -48,6 +52,7 @@ public class PlayerBehavior : MonoBehaviour
     // Update is called once per frame
     public void Movement(InputAction.CallbackContext context)
     { //cette méthode lie à l'inpput player pour le déplacement
+
         moveVector = context.ReadValue<Vector2>();
         // Debug.Log(moveVector);
 
@@ -57,11 +62,7 @@ public class PlayerBehavior : MonoBehaviour
         if(context.performed && interactions && !activePivot){ //performed indique que l'action est en train de se faire
             activePivot = true;
             Debug.Log(activePivot);
-            // activeOverlay = true;
         }
-        // else if(context.canceled && interactions){
-        //     activeOverlay = false;
-        // }
         else if(context.performed && activePivot){
             activePivot = false;
             Debug.Log(activePivot);
@@ -162,9 +163,13 @@ public class PlayerBehavior : MonoBehaviour
             e = Color.green; 
         }
         Debug.DrawRay(transform.position, direction * hitRange, e);
-        GameObject pivotsRecup = objectHit.transform.gameObject;
-        cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
-        
+        // cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
+
+
+
+
+
+
 
         //création du raycast center
         RaycastHit centerHit;
@@ -192,6 +197,26 @@ public class PlayerBehavior : MonoBehaviour
         }else if(!activePivot && cubeCreated){
             Destroy(cubeOverlay);
             cubeCreated = false;
+        }
+        //réglage condition de rotation de l'overlay
+        if(moveVector.y > 0 && activePivot){
+            rototoUp = true;
+        }else if(moveVector.y < 0 && activePivot){
+            rototoDown = true;
+        }
+        else if(moveVector.y == 0 && activePivot){
+            rototoUp = false;
+            rototoDown =false;
+        }
+
+
+        //activation des rotation de l'overlay ou pas
+        if(rototoUp){
+            cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
+            cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right * -1, 90);
+        }else if(rototoDown){
+            cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
+            cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right, 90);
         }
         
         Debug.DrawRay(rayForward.position, direction * hitRange, f);
