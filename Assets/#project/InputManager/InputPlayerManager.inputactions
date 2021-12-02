@@ -20,6 +20,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "MoveOverlayUpDown",
+                    "type": "Value",
+                    "id": "8435a686-a98e-4bb1-ba1e-532f09a17d99",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -86,6 +94,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interactions",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f2873272-ad41-4d1e-bf2a-1239b776b8a4",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveOverlayUpDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9ede16a2-e75a-4f5e-a02e-02ccf35ea0e5",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveOverlayUpDown",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

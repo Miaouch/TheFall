@@ -29,6 +29,7 @@ public class PlayerBehavior : MonoBehaviour
     public Transform head;
     public GameObject instantiateCube;
     public GameObject cubeOverlay;
+    public Transform cubeOverlayPivot;
 
 
 
@@ -64,6 +65,12 @@ public class PlayerBehavior : MonoBehaviour
         else if(context.performed && activePivot){
             activePivot = false;
             Debug.Log(activePivot);
+        }
+    }
+
+    public void MoveOverlayUpDown(InputAction.CallbackContext context){
+        if(context.performed){
+            Debug.Log("prout");
         }
     }
     void OnTriggerEnter(Collider other)
@@ -152,8 +159,12 @@ public class PlayerBehavior : MonoBehaviour
         RaycastHit objectHit;
         Color e = Color.red;
         if(Physics.Raycast(transform.position, direction, out objectHit, hitRange)){
-            e = Color.green; }
+            e = Color.green; 
+        }
         Debug.DrawRay(transform.position, direction * hitRange, e);
+        GameObject pivotsRecup = objectHit.transform.gameObject;
+        cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
+        
 
         //création du raycast center
         RaycastHit centerHit;
@@ -173,9 +184,9 @@ public class PlayerBehavior : MonoBehaviour
         }else{
             interactions = false;
 
-        }
+        } //creation du cube
         if(activePivot && !cubeCreated){
-            print("pop");
+            // print("pop");
             cubeOverlay = Instantiate(instantiateCube, forwardHit.transform.position, Quaternion.identity);
             cubeCreated = true;
         }else if(!activePivot && cubeCreated){
@@ -264,7 +275,7 @@ public class PlayerBehavior : MonoBehaviour
             }
         }
 
-        if (isRotating)
+        if (isRotating || cubeCreated)
         {
             moveVector.y = 0;
             moveVector.x = 0;
