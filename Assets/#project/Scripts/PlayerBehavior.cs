@@ -182,6 +182,8 @@ public class PlayerBehavior : MonoBehaviour
         //création du raycast vers le forward pour test si plateform plane
         RaycastHit forwardHit;
         Color f = Color.red;
+        GameObject plateformBox1 = null;
+        GameObject plateformBox2 = null;
         
         if(Physics.Raycast(rayForward.position, direction, out forwardHit, hitRange)){
             f = Color.green; 
@@ -189,15 +191,35 @@ public class PlayerBehavior : MonoBehaviour
         }else{
             interactions = false;
 
-        } //creation du cube
+        } 
+        
+        
+        //creation du cube
         if(activePivot && !cubeCreated){
             // print("pop");
             cubeOverlay = Instantiate(instantiateCube, forwardHit.transform.position, Quaternion.identity);
             cubeCreated = true;
+            plateformBox1 = forwardHit.transform.gameObject;
+            plateformBox2 = forwardHit.transform.gameObject;
+            plateformBox1.GetComponent<BoxCollider>().enabled = false;
         }else if(!activePivot && cubeCreated){
             Destroy(cubeOverlay);
             cubeCreated = false;
+            plateformBox1.GetComponent<BoxCollider>().enabled = true;
         }
+
+        if(cubeCreated){
+            RaycastHit rayOverlay;
+            Color k = Color.red;
+            if(Physics.Raycast(cubeOverlay.transform.position + (transform.forward * -4) + (transform.up * -2), direction, out rayOverlay, hitRange)){
+                k = Color.green;
+                if(moveVector.y > 0){
+                    moveVector.y = 0;
+                }
+            }
+            Debug.DrawRay(cubeOverlay.transform.position + (transform.forward * -4) + (transform.up * -2), direction * hitRange, k);
+        }
+
         //réglage condition de rotation de l'overlay
         if(moveVector.y > 0 && activePivot){
             rototoUp = true;
