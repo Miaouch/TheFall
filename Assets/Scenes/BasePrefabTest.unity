@@ -1007,7 +1007,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 776788811}
-  m_LocalRotation: {x: -0.000000013165536, y: 0.97788423, z: -0.20914707, w: -0.00000006155654}
+  m_LocalRotation: {x: -0.0000000051186793, y: 0.97788423, z: -0.20914707, w: -0.000000023932802}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1363,7 +1363,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1121875138}
-  m_LocalRotation: {x: -0.0000000020702868, y: 0.99875855, z: -0.0498137, w: -0.000000041508994}
+  m_LocalRotation: {x: -0.0000000022845654, y: 0.99875855, z: -0.0498137, w: -0.00000004580525}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2177,7 +2177,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1454114603}
-  m_LocalRotation: {x: -0.00000002756176, y: 0.96541387, z: -0.26072225, w: 0.000000017657776}
+  m_LocalRotation: {x: 0.000000004768699, y: 0.96541387, z: -0.26072225, w: -0.00000010205693}
   m_LocalPosition: {x: 0.0000004371139, y: 1.65, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -2335,7 +2335,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1454820579}
         m_TargetAssemblyTypeName: PlayerBehavior, Assembly-CSharp
-        m_MethodName: MoveOverlayUpDown
+        m_MethodName: Validation
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

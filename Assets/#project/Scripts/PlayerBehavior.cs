@@ -69,11 +69,12 @@ public class PlayerBehavior : MonoBehaviour
         }
     }
 
-    public void MoveOverlayUpDown(InputAction.CallbackContext context){
-        if(context.performed){
-            Debug.Log("prout");
+    public void Validation(InputAction.CallbackContext context){
+        if(context.performed && activePivot){
+            Debug.Log("validate");
         }
     }
+
     void OnTriggerEnter(Collider other)
     {
         // print("Rotation ?");
@@ -181,43 +182,100 @@ public class PlayerBehavior : MonoBehaviour
 
         //création du raycast vers le forward pour test si plateform plane
         RaycastHit forwardHit;
-        Color f = Color.red;
-        GameObject plateformBox1 = null;
-        GameObject plateformBox2 = null;
-        
+        Color f = Color.red; 
         if(Physics.Raycast(rayForward.position, direction, out forwardHit, hitRange)){
             f = Color.green; 
-            interactions = true;
-        }else{
-            interactions = false;
+        }
+        
+        
+ 
+        
 
-        } 
-        
-        
+        Vector3 camP = new Vector3();
+        camP = transform.position - cam.position;
+        Vector3 cameraPlayer2D = new Vector3(camP.x, 0, camP.z).normalized;
+
+        //récupération de la normal when rayforward hit
+        // if(objectHit.collider != null && !isRotating){
+        //     Vector3 result = objectHit.normal;
+        //     // Vector3[] result = platforme.GetComponent<MeshFilter>().mesh.normals;
+        //     if(result == Vector3.up || result == Vector3.down){
+        //         cameraPlayer2D = new Vector3(camP.x, 0, camP.z).normalized;
+        //         print("up = y");
+        //     }else if(result == Vector3.left || result == Vector3.right){
+        //         cameraPlayer2D = new Vector3(0, camP.y, camP.z).normalized;
+        //         print("up = x");
+        //     }else if(result == Vector3.forward || result == Vector3.back){
+        //         cameraPlayer2D = new Vector3(camP.x, camP.y, 0).normalized;
+        //         print("up = z");
+        //     }           
+        //     print(result);
         //creation du cube
+
+        // cameraPlayer2D = cameraPlayer2D.normalized;
+        Vector3 movement = Vector3.zero;
+
+        //création du raycast vers front
+        Vector3 front = transform.forward;
+        RaycastHit rayFrontHit;
+        Color c = Color.red;
+        if (Physics.Raycast(rayFront.position, front, out rayFrontHit, hitRange * 2)){
+            c = Color.green; 
+        }
+        Debug.DrawRay(rayFront.position, front * (hitRange * 2), c);
+
+        //création du raycast vers front en bas
+        Vector3 under = transform.forward;
+        RaycastHit rayFrontUnderHit;
+        Color d = Color.red;
+        if(Physics.Raycast(rayFrontUnder.position, front, out rayFrontUnderHit,1.5f * 2)){ 
+            d=Color.green;
+        }
+        Debug.DrawRay(rayFrontUnder.position, front * (1.5f * 2), d);
+
+        if(forwardHit.collider != null || rayFrontHit.collider != null || rayFrontUnderHit.collider != null){
+            interactions = true;
+        } else {
+            interactions = false;
+        }
+
+
         if(activePivot && !cubeCreated){
-            // print("pop");
-            cubeOverlay = Instantiate(instantiateCube, forwardHit.transform.position, Quaternion.identity);
-            cubeCreated = true;
-            plateformBox1 = forwardHit.transform.gameObject;
-            plateformBox2 = forwardHit.transform.gameObject;
-            plateformBox1.GetComponent<BoxCollider>().enabled = false;
+            if(forwardHit.collider != null){
+                cubeOverlay = Instantiate(instantiateCube, forwardHit.transform.position, Quaternion.identity);
+                cubeOverlay.transform.rotation = forwardHit.transform.rotation;
+                cubeCreated = true;
+            } else if(rayFrontHit.collider != null){
+                cubeOverlay = Instantiate(instantiateCube, rayFrontHit.transform.position, Quaternion.identity);
+                cubeOverlay.transform.rotation = rayFrontHit.transform.rotation;
+                cubeCreated = true;
+            } else if(rayFrontUnderHit.collider != null){
+                cubeOverlay = Instantiate(instantiateCube, rayFrontUnderHit.transform.position, Quaternion.identity);
+                cubeOverlay.transform.rotation = rayFrontUnderHit.transform.rotation;
+                cubeCreated = true; 
+            }
+            // plateformBox1.GetComponent<BoxCollider>().enabled = false;
         }else if(!activePivot && cubeCreated){
             Destroy(cubeOverlay);
             cubeCreated = false;
             // plateformBox1.GetComponent<BoxCollider>().enabled = true;
         }
 
+        //creation du raycast de l'overlay
         if(cubeCreated){
             RaycastHit rayOverlay;
             Color k = Color.red;
-            if(Physics.Raycast(cubeOverlay.transform.position + (transform.forward * -4) + (transform.up * -2), direction, out rayOverlay, hitRange)){
+            if(Physics.Raycast(cubeOverlay.transform.position + (cubeOverlay.transform.up * -0.5f) , (cubeOverlay.transform.up * 1), out rayOverlay, hitRange)){
                 k = Color.green;
-                if(moveVector.y > 0){
-                    moveVector.y = 0;
-                }
             }
-            Debug.DrawRay(cubeOverlay.transform.position + (transform.forward * -4) + (transform.up * -2), direction * hitRange, k);
+            Debug.DrawRay(cubeOverlay.transform.position + (cubeOverlay.transform.up * -0.5f) , (cubeOverlay.transform.up * 1) * hitRange, k);
+            // if(Physics.Raycast(cubeOverlay.transform.position + (cubeOverlay.transform.forward * -2) + (cubeOverlay.transform.up * 2), (cubeOverlay.transform.forward * -1), out rayOverlay, hitRange)){
+            //     k = Color.green;
+            //     if(moveVector.y > 0){
+            //         moveVector.y = 0;
+            //     }
+            // }
+            // Debug.DrawRay(cubeOverlay.transform.position + (cubeOverlay.transform.forward * -2) + (cubeOverlay.transform.up * 2), (cubeOverlay.transform.forward * -1) * hitRange, k);
         }
 
         //réglage condition de rotation de l'overlay
@@ -247,53 +305,11 @@ public class PlayerBehavior : MonoBehaviour
             // listPivots = objectHit.transform.gameObject.GetComponent<PlateformBehavior>().pivots;
             // for(int i = 0; i < listPivots.Count; i++){
             //     listPivots[i].SetActive(true);
- 
-        
-
-        Vector3 camP = new Vector3();
-        camP = transform.position - cam.position;
-        Vector3 cameraPlayer2D = new Vector3(camP.x, 0, camP.z).normalized;
-
-        //récupération de la normal when rayforward hit
-        // if(objectHit.collider != null && !isRotating){
-        //     Vector3 result = objectHit.normal;
-        //     // Vector3[] result = platforme.GetComponent<MeshFilter>().mesh.normals;
-        //     if(result == Vector3.up || result == Vector3.down){
-        //         cameraPlayer2D = new Vector3(camP.x, 0, camP.z).normalized;
-        //         print("up = y");
-        //     }else if(result == Vector3.left || result == Vector3.right){
-        //         cameraPlayer2D = new Vector3(0, camP.y, camP.z).normalized;
-        //         print("up = x");
-        //     }else if(result == Vector3.forward || result == Vector3.back){
-        //         cameraPlayer2D = new Vector3(camP.x, camP.y, 0).normalized;
-        //         print("up = z");
-        //     }           
-        //     print(result);
         // }
-
-        // cameraPlayer2D = cameraPlayer2D.normalized;
-        Vector3 movement = Vector3.zero;
-
-        //création du raycast vers front
-        Vector3 front = transform.forward;
-        RaycastHit rayFrontHit;
-        Color c = Color.red;
-        if (Physics.Raycast(rayFront.position, front, out rayFrontHit, hitRange))
-        { c = Color.green; }
-        Debug.DrawRay(rayFront.position, front * (hitRange * 2), c);
-
-        //création du raycast vers front en bas
-        Vector3 under = transform.forward;
-        RaycastHit rayFrontUndertHit;
-        Color d = Color.red;
-        if(Physics.Raycast(rayFrontUnder.position, front, out rayFrontUndertHit,1.5f))
-        { d=Color.green;}
-        Debug.DrawRay(rayFrontUnder.position, front * (1.5f * 2), d);
-
         
 
         //condition pour activer la rotationvers le bas
-        if (rayFrontHit.collider == null && rayFrontUndertHit.collider != null )
+        if (rayFrontHit.collider == null && rayFrontUnderHit.collider != null )
         {
             rotationBas = true;
         }else{
@@ -301,7 +317,7 @@ public class PlayerBehavior : MonoBehaviour
         }
 
         //condition pour activer la rotationvers le haut
-        if(rayFrontHit.collider != null && rayFrontUndertHit.collider == null ){
+        if(rayFrontHit.collider != null && rayFrontUnderHit.collider == null ){
             rotationHaut = true;
         }else {
             rotationHaut = false;
