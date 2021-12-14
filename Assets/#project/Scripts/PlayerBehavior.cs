@@ -34,8 +34,8 @@ public class PlayerBehavior : MonoBehaviour
     public bool rototoDown;
     public bool rototoLeft;
     public bool rototoRight;
-
-
+    public bool autorisedValidation;
+    public bool validate;
 
 
 
@@ -70,7 +70,8 @@ public class PlayerBehavior : MonoBehaviour
     }
 
     public void Validation(InputAction.CallbackContext context){
-        if(context.performed && activePivot){
+        if(context.performed && activePivot && autorisedValidation){
+            validate = true;
             Debug.Log("validate");
         }
     }
@@ -138,6 +139,15 @@ public class PlayerBehavior : MonoBehaviour
             }
         }
 
+        IEnumerator MovePlatforme(Transform plateformeMove, Transform cubeOverlay){
+            float startTime = Time.time;
+            float time = 0f;
+            while(Time.time <= durationRotation + startTime){
+                time += Time.deltaTime;
+                plateformeMove.position = Vector3.Lerp(plateformeMove.position, cubeOverlay.position, time/durationRotation);
+                yield return true;
+            }
+        }
     }
     void Update()
     {
@@ -201,18 +211,7 @@ public class PlayerBehavior : MonoBehaviour
         //     // Vector3[] result = platforme.GetComponent<MeshFilter>().mesh.normals;
         //     if(result == Vector3.up || result == Vector3.down){
         //         cameraPlayer2D = new Vector3(camP.x, 0, camP.z).normalized;
-        //         print("up = y");
-        //     }else if(result == Vector3.left || result == Vector3.right){
-        //         cameraPlayer2D = new Vector3(0, camP.y, camP.z).normalized;
-        //         print("up = x");
-        //     }else if(result == Vector3.forward || result == Vector3.back){
-        //         cameraPlayer2D = new Vector3(camP.x, camP.y, 0).normalized;
-        //         print("up = z");
-        //     }           
-        //     print(result);
-        //creation du cube
-
-        // cameraPlayer2D = cameraPlayer2D.normalized;
+        
         Vector3 movement = Vector3.zero;
 
         //création du raycast vers front
@@ -269,6 +268,11 @@ public class PlayerBehavior : MonoBehaviour
                 k = Color.green;
             }
             Debug.DrawRay(cubeOverlay.transform.position + (cubeOverlay.transform.up * -0.5f) , (cubeOverlay.transform.up * 1) * hitRange, k);
+            if(rayOverlay.collider != null){
+                autorisedValidation = false;
+            } else{
+                autorisedValidation = true;
+            }
             // if(Physics.Raycast(cubeOverlay.transform.position + (cubeOverlay.transform.forward * -2) + (cubeOverlay.transform.up * 2), (cubeOverlay.transform.forward * -1), out rayOverlay, hitRange)){
             //     k = Color.green;
             //     if(moveVector.y > 0){
