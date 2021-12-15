@@ -36,6 +36,9 @@ public class PlayerBehavior : MonoBehaviour
     public bool rototoRight;
     public bool autorisedValidation;
     public bool validate;
+    public Transform plateformSource;
+    public bool destroyOverlay = false;
+    public bool movingPlatforme;
 
 
 
@@ -59,7 +62,7 @@ public class PlayerBehavior : MonoBehaviour
     }
 
     public void Interactions(InputAction.CallbackContext context){
-        if(context.performed && interactions && !activePivot){ //performed indique que l'action est en train de se faire
+        if(context.performed && interactions && !activePivot ){ //performed indique que l'action est en train de se faire
             activePivot = true;
             Debug.Log(activePivot);
         }
@@ -139,15 +142,6 @@ public class PlayerBehavior : MonoBehaviour
             }
         }
 
-        IEnumerator MovePlatforme(Transform plateformeMove, Transform cubeOverlay){
-            float startTime = Time.time;
-            float time = 0f;
-            while(Time.time <= durationRotation + startTime){
-                time += Time.deltaTime;
-                plateformeMove.position = Vector3.Lerp(plateformeMove.position, cubeOverlay.position, time/durationRotation);
-                yield return true;
-            }
-        }
     }
     void Update()
     {
@@ -238,25 +232,32 @@ public class PlayerBehavior : MonoBehaviour
             interactions = false;
         }
 
+        if(destroyOverlay && activePivot){
+            activePivot = false;
+        }
 
-        if(activePivot && !cubeCreated){
+        if(activePivot && !cubeCreated && !validate){
             if(forwardHit.collider != null){
                 cubeOverlay = Instantiate(instantiateCube, forwardHit.transform.position, Quaternion.identity);
                 cubeOverlay.transform.rotation = forwardHit.transform.rotation;
                 cubeCreated = true;
+                plateformSource = forwardHit.transform.gameObject.transform;
             } else if(rayFrontHit.collider != null){
                 cubeOverlay = Instantiate(instantiateCube, rayFrontHit.transform.position, Quaternion.identity);
                 cubeOverlay.transform.rotation = rayFrontHit.transform.rotation;
                 cubeCreated = true;
+                plateformSource = rayFrontHit.transform.gameObject.transform;
             } else if(rayFrontUnderHit.collider != null){
                 cubeOverlay = Instantiate(instantiateCube, rayFrontUnderHit.transform.position, Quaternion.identity);
                 cubeOverlay.transform.rotation = rayFrontUnderHit.transform.rotation;
                 cubeCreated = true; 
+                plateformSource = rayFrontUnderHit.transform.gameObject.transform;
             }
             // plateformBox1.GetComponent<BoxCollider>().enabled = false;
         }else if(!activePivot && cubeCreated){
             Destroy(cubeOverlay);
             cubeCreated = false;
+            destroyOverlay = false;
             // plateformBox1.GetComponent<BoxCollider>().enabled = true;
         }
 
@@ -283,14 +284,23 @@ public class PlayerBehavior : MonoBehaviour
         }
 
         //réglage condition de rotation de l'overlay
-        if(moveVector.y > 0 && activePivot){
+        if(moveVector.y > 0 && activePivot && !movingPlatforme){
             rototoUp = true;
-        }else if(moveVector.y < 0 && activePivot){
+        }else if(moveVector.y < 0 && activePivot && !movingPlatforme){
             rototoDown = true;
         }
-        else if(moveVector.y == 0 && activePivot){
+        else if(moveVector.y == 0 && activePivot && !movingPlatforme){
             rototoUp = false;
             rototoDown =false;
+        }
+        if(moveVector.x > 0 && activePivot && !movingPlatforme){
+            print("yooo");
+            rototoRight = true;
+        }else if(moveVector.x < 0 && activePivot && !movingPlatforme){
+            rototoLeft = true;
+        }else if(moveVector.x == 0 && activePivot && !movingPlatforme){
+            rototoLeft = false;
+            rototoRight = false;
         }
 
 
@@ -301,8 +311,20 @@ public class PlayerBehavior : MonoBehaviour
         }else if(rototoDown){
             cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
             cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right, 90);
+        }else if(rototoLeft){
+            cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[2].transform;
+            cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, -90);
+        }else if(rototoRight){
+            //condition de si raycast dedans overlay sur platformSource alors replacer le pivot et le left et le right se font en fonctionde ce pivot
+            cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[0].transform;
+            cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, 90);
         }
         
+        if(validate){
+            StartCoroutine(MovePlatforme(plateformSource, cubeOverlay.transform));
+            validate= false;
+        }
+
         Debug.DrawRay(rayForward.position, direction * hitRange, f);
             //activate la possibilité d'intéragir
             // List<GameObject> listPivots = new List<GameObject>();
@@ -399,6 +421,20 @@ public class PlayerBehavior : MonoBehaviour
         //     print(result * -1); 
         // }
     }
+        IEnumerator MovePlatforme(Transform plateformeMove, Transform cubeOverlay){
+            float startTime = Time.time;
+            float time = 0f;
+            // print(plateformeMove.parent.name);
+            while(Time.time <= 2f + startTime){
+                movingPlatforme = true;
+                time += Time.deltaTime;
+                plateformeMove.parent.position = Vector3.Lerp(plateformeMove.parent.position, cubeOverlay.position, time/2f);
+                plateformeMove.parent.rotation = Quaternion.Lerp(plateformeMove.parent.rotation, cubeOverlay.rotation, time/2f);
+                yield return true;
+            }
+           movingPlatforme =false;
+           destroyOverlay =true;
+        }
 
     // IEnumerator RotationDown(RaycastHit rayFrontUndertHit)
     // {
