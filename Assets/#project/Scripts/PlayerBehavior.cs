@@ -39,7 +39,7 @@ public class PlayerBehavior : MonoBehaviour
     public Transform plateformSource;
     public bool destroyOverlay = false;
     public bool movingPlatforme;
-
+    public bool upDown;
 
 
 
@@ -97,11 +97,11 @@ public class PlayerBehavior : MonoBehaviour
             plane.Raycast(downRay, out dist);
 
             Vector3 rotationPoint = downRay.GetPoint(dist);
-
+            Vector3 rotationAxis = pivotPoint.forward;
             float startTime = Time.time;
             isRotating = true;
             while (Time.time <= durationRotation + startTime) {
-                transform.RotateAround(rotationPoint, pivotPoint.forward, -90 / durationRotation * Time.deltaTime);
+                transform.RotateAround(rotationPoint, rotationAxis, -90 / durationRotation * Time.deltaTime);
                 yield return true;
             }
 
@@ -121,6 +121,7 @@ public class PlayerBehavior : MonoBehaviour
             plane.Raycast(downRay, out dist);
 
             Vector3 rotationPoint = downRay.GetPoint(dist);
+            Vector3 rotationAxis = pivotPoint.forward;
             // Vector3 start = head.position;
             // Vector3 end = start + head.transform.up * -5;
             float startTime = Time.time;
@@ -129,7 +130,7 @@ public class PlayerBehavior : MonoBehaviour
             
             while (Time.time <= durationRotation + startTime) {
                 time+= Time.deltaTime;
-                transform.RotateAround(head.position, pivotPoint.forward, 90 / durationRotation * Time.deltaTime);
+                transform.RotateAround(head.position, rotationAxis, 90 / durationRotation * Time.deltaTime);
                 // head.up = Vector3.Lerp(start, end, time/durationRotation);
                 yield return true;
             }
@@ -298,7 +299,6 @@ public class PlayerBehavior : MonoBehaviour
             rototoDown =false;
         }
         if(moveVector.x > 0 && activePivot && !movingPlatforme){
-            print("yooo");
             rototoRight = true;
             rototoUp = false;
             rototoDown =false;
@@ -314,25 +314,37 @@ public class PlayerBehavior : MonoBehaviour
 
         
         //activation des rotation de l'overlay ou pas
-        if(rototoUp){
+        if(activePivot && cubeOverlay.transform.position == plateformSource.transform.position){
             cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
-            cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right * -1, 90);
-        }else if(rototoDown){
-            cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
+            if(rototoUp){
+                upDown = true;
+                cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right * -1, 90);
+            }else if(rototoDown){
+                upDown = true;
+                // cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
+                cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right, 90);
+            }
+        }
+        else if(rototoDown && upDown){
             cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right, 90);
+        }
+        else if(rototoUp && upDown){
+            cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right * -1, 90);
         }
         if(activePivot && cubeOverlay.transform.position == plateformSource.transform.position){
             if(rototoRight){
+                upDown =false;
                 //condition de si raycast dedans overlay sur platformSource alors replacer le pivot et le left et le right se font en fonctionde ce pivot
                 cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[0].transform;
                 cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, 90);
             }else if(rototoLeft){
+                upDown =false;  
                 cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[2].transform;
-                cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, -90);
+                cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up * -1, 90);
             }
-        }else if(rototoLeft){
-            cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, -90);
-        }else if(rototoRight){
+        }else if(rototoLeft && !upDown){
+            cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up * -1, 90);
+        }else if(rototoRight && !upDown){
             cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, 90);
         }
         
