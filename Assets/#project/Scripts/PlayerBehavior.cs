@@ -286,8 +286,12 @@ public class PlayerBehavior : MonoBehaviour
         //réglage condition de rotation de l'overlay
         if(moveVector.y > 0 && activePivot && !movingPlatforme){
             rototoUp = true;
+            rototoLeft = false;
+            rototoRight = false;
         }else if(moveVector.y < 0 && activePivot && !movingPlatforme){
             rototoDown = true;
+            rototoLeft = false;
+            rototoRight = false;
         }
         else if(moveVector.y == 0 && activePivot && !movingPlatforme){
             rototoUp = false;
@@ -296,14 +300,19 @@ public class PlayerBehavior : MonoBehaviour
         if(moveVector.x > 0 && activePivot && !movingPlatforme){
             print("yooo");
             rototoRight = true;
+            rototoUp = false;
+            rototoDown =false;
         }else if(moveVector.x < 0 && activePivot && !movingPlatforme){
             rototoLeft = true;
+            rototoUp = false;
+            rototoDown =false;
         }else if(moveVector.x == 0 && activePivot && !movingPlatforme){
             rototoLeft = false;
             rototoRight = false;
         }
 
 
+        
         //activation des rotation de l'overlay ou pas
         if(rototoUp){
             cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
@@ -311,12 +320,19 @@ public class PlayerBehavior : MonoBehaviour
         }else if(rototoDown){
             cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
             cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right, 90);
+        }
+        if(activePivot && cubeOverlay.transform.position == plateformSource.transform.position){
+            if(rototoRight){
+                //condition de si raycast dedans overlay sur platformSource alors replacer le pivot et le left et le right se font en fonctionde ce pivot
+                cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[0].transform;
+                cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, 90);
+            }else if(rototoLeft){
+                cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[2].transform;
+                cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, -90);
+            }
         }else if(rototoLeft){
-            cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[2].transform;
             cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, -90);
         }else if(rototoRight){
-            //condition de si raycast dedans overlay sur platformSource alors replacer le pivot et le left et le right se font en fonctionde ce pivot
-            cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[0].transform;
             cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, 90);
         }
         
