@@ -108,7 +108,7 @@ public class PlayerBehavior : MonoBehaviour
             isRotating = false;
             RaycastHit centerHit;
             if(Physics.Raycast(rayCenter.position, transform.up * -1, out centerHit, 1.5f)){
-                transform.position = centerHit.point + (transform.up * 0.1f);
+                transform.position = centerHit.point + (transform.up * 0.2f);
             }
             
 
@@ -139,7 +139,7 @@ public class PlayerBehavior : MonoBehaviour
             isRotating = false;
             RaycastHit centerHit;
             if(Physics.Raycast(rayCenter.position, transform.up * -1, out centerHit, 1.5f)){
-                transform.position = centerHit.point + (transform.up * 0.1f);
+                transform.position = centerHit.point + (transform.up * 0.2f);
             }
         }
 
@@ -363,7 +363,7 @@ public class PlayerBehavior : MonoBehaviour
         
 
         //condition pour activer la rotationvers le bas
-        if (rayFrontHit.collider == null && rayFrontUnderHit.collider != null )
+        if (rayFrontHit.collider == null && rayFrontUnderHit.collider != null)
         {
             rotationBas = true;
         }else{
