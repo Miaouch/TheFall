@@ -662,7 +662,7 @@ Transform:
   - {fileID: 149947965}
   - {fileID: 1768535231}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &552600219 stripped
 MonoBehaviour:
@@ -1030,7 +1030,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 776788811}
-  m_LocalRotation: {x: 0.20914707, y: 0.000000004733444, z: -0.0000000010123749, w: 0.97788423}
+  m_LocalRotation: {x: 0.20914707, y: -0.000000011136262, z: 0.0000000023817917, w: 0.97788423}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1530,7 +1530,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1382438465}
-  m_LocalRotation: {x: 0.26072222, y: -1e-45, z: -0, w: 0.96541387}
+  m_LocalRotation: {x: 0.26072222, y: 3e-45, z: -1e-45, w: 0.96541387}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1663,7 +1663,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1454114603}
-  m_LocalRotation: {x: 0.26072225, y: 0.0000000069296746, z: 0.0000000018714437, w: 0.96541387}
+  m_LocalRotation: {x: 0.26072225, y: -0.000000006929674, z: -0.0000000018714408, w: 0.96541387}
   m_LocalPosition: {x: 0, y: 1.65, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -2746,7 +2746,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5253631823360299505, guid: 111a724b5de729e4dba4b634b0f8be48, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5253631823360299505, guid: 111a724b5de729e4dba4b634b0f8be48, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2938,5 +2938,6 @@ PrefabInstance:
       propertyPath: startingPoint
       value: 
       objectReference: {fileID: 1305132627}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8365010573753186338, guid: 87c9eaa231ac3534ab4ca53c7d4afccd, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 87c9eaa231ac3534ab4ca53c7d4afccd, type: 3}
