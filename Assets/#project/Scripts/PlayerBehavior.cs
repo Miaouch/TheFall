@@ -42,6 +42,9 @@ public class PlayerBehavior : MonoBehaviour
     public bool upDown;
     public GameObject pauseMenu;
     public bool escapeMenu;
+    public AudioSource boop;
+    public AudioSource boopPitch;
+    public AudioSource platformSoud;
 
 
     // Start is called before the first frame update
@@ -252,16 +255,19 @@ public class PlayerBehavior : MonoBehaviour
             if(forwardHit.collider != null){
                 cubeOverlay = Instantiate(instantiateCube, forwardHit.transform.position, Quaternion.identity);
                 cubeOverlay.transform.rotation = forwardHit.transform.rotation;
+                boop.Play();
                 cubeCreated = true;
                 plateformSource = forwardHit.transform.gameObject.transform;
             } else if(rayFrontHit.collider != null){
                 cubeOverlay = Instantiate(instantiateCube, rayFrontHit.transform.position, Quaternion.identity);
                 cubeOverlay.transform.rotation = rayFrontHit.transform.rotation;
+                boop.Play();
                 cubeCreated = true;
                 plateformSource = rayFrontHit.transform.gameObject.transform;
             } else if(rayFrontUnderHit.collider != null){
                 cubeOverlay = Instantiate(instantiateCube, rayFrontUnderHit.transform.position, Quaternion.identity);
                 cubeOverlay.transform.rotation = rayFrontUnderHit.transform.rotation;
+                boop.Play();
                 cubeCreated = true; 
                 plateformSource = rayFrontUnderHit.transform.gameObject.transform;
             }
@@ -330,17 +336,21 @@ public class PlayerBehavior : MonoBehaviour
             if(rototoUp){
                 upDown = true;
                 cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right * -1, 90);
+                boopPitch.Play();
             }else if(rototoDown){
                 upDown = true;
                 // cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[1].transform;
                 cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right, 90);
+                boopPitch.Play();
             }
         }
         else if(rototoDown && upDown){
             cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right, 90);
+            boopPitch.Play();
         }
         else if(rototoUp && upDown){
             cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.right * -1, 90);
+            boopPitch.Play();
         }
         if(activePivot && cubeOverlay.transform.position == plateformSource.transform.position){
             if(rototoRight){
@@ -348,19 +358,24 @@ public class PlayerBehavior : MonoBehaviour
                 //condition de si raycast dedans overlay sur platformSource alors replacer le pivot et le left et le right se font en fonctionde ce pivot
                 cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[0].transform;
                 cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, 90);
+                boopPitch.Play();
             }else if(rototoLeft){
                 upDown =false;  
                 cubeOverlayPivot = objectHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().pivots[2].transform;
                 cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up * -1, 90);
+                boopPitch.Play();
             }
         }else if(rototoLeft && !upDown){
             cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up * -1, 90);
+            boopPitch.Play();
         }else if(rototoRight && !upDown){
             cubeOverlay.transform.RotateAround(cubeOverlayPivot.position, cubeOverlayPivot.up, 90);
+            boopPitch.Play();
         }
         
         if(validate){
             StartCoroutine(MovePlatforme(plateformSource, cubeOverlay.transform));
+            platformSoud.Play();
             validate= false;
         }
 

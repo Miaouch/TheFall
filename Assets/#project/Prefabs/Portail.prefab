@@ -90,7 +90,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f23e72a7d74e2a8418beae9b70a83471, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
 --- !u!1 &4058642834322157873
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,7 +150,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 9607bf78dc64e0d4cb8182ae150ff523, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -237,6 +236,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 9f40e9b998f7e2147b1238ffc9dd0c24, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a32e8058120d33f4bb9d0019cac962e6, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 9f40e9b998f7e2147b1238ffc9dd0c24, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9607bf78dc64e0d4cb8182ae150ff523, type: 2}
     - target: {fileID: 919132149155446097, guid: 9f40e9b998f7e2147b1238ffc9dd0c24, type: 3}
       propertyPath: m_Name
       value: portail
