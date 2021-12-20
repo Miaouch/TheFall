@@ -15,6 +15,7 @@ public class PlateformBehavior : MonoBehaviour
     public bool isRotating;
     public float angleRotation;
     public bool activatedTrigger;
+    public GameObject cubeInteraction;
     
     void Start()
     {

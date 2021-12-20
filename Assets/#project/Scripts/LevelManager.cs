@@ -5,10 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-    
+    public GameObject prout;
      void OnTriggerEnter(Collider other){
         if(other.CompareTag("Player")){
             print("You win!");
+            prout.SetActive(true);
             StartCoroutine(ChangeScene(5f));
         }
     }

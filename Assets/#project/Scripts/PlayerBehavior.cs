@@ -241,11 +241,26 @@ public class PlayerBehavior : MonoBehaviour
         }
         Debug.DrawRay(rayFrontUnder.position, front * (1.5f * 2), d);
 
+        GameObject outline;
         if(forwardHit.collider != null || rayFrontHit.collider != null || rayFrontUnderHit.collider != null){
+            // while(rayFrontHit.collider != null && !activePivot){
+            //     rayFrontHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().cubeInteraction.SetActive(true);
+            // }
+            // while(rayFrontUnderHit.collider != null && !activePivot){
+            //     rayFrontUnderHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().cubeInteraction.SetActive(true);
+            // }
             interactions = true;
         } else {
             interactions = false;
         }
+
+        // if(forwardHit.collider != null && !activePivot){
+        //     forwardHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().cubeInteraction.SetActive(true);
+        // }else{
+        //     forwardHit.transform.gameObject.GetComponentInParent<PlateformBehavior>().cubeInteraction.SetActive(false);
+        // }
+
+
 
         if(destroyOverlay && activePivot){
             activePivot = false;
@@ -476,12 +491,16 @@ public class PlayerBehavior : MonoBehaviour
         // }
     }
         IEnumerator MovePlatforme(Transform plateformeMove, Transform cubeOverlay){
+            MeshRenderer renderOverlay;
+            renderOverlay = cubeOverlay.GetComponent<MeshRenderer>();
             float startTime = Time.time;
             float time = 0f;
             // print(plateformeMove.parent.name);
+            float dissolve = 0.8f;
             while(Time.time <= 2f + startTime){
                 movingPlatforme = true;
                 time += Time.deltaTime;
+                renderOverlay.material.SetFloat("_Disolve", time/2f);
                 plateformeMove.parent.position = Vector3.Lerp(plateformeMove.parent.position, cubeOverlay.position, time/2f);
                 plateformeMove.parent.rotation = Quaternion.Lerp(plateformeMove.parent.rotation, cubeOverlay.rotation, time/2f);
                 yield return true;
