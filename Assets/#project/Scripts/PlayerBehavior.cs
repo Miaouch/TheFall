@@ -40,7 +40,8 @@ public class PlayerBehavior : MonoBehaviour
     public bool destroyOverlay = false;
     public bool movingPlatforme;
     public bool upDown;
-
+    public GameObject pauseMenu;
+    public bool escapeMenu;
 
 
     // Start is called before the first frame update
@@ -52,7 +53,17 @@ public class PlayerBehavior : MonoBehaviour
         cubeCreated = false;
     }
 
-    // Update is called once per frame
+    public void PauseMenu(InputAction.CallbackContext context){
+        if(context.performed && !escapeMenu){
+            print("yooooooo");
+            escapeMenu = true;
+            pauseMenu.SetActive(true);
+        }
+        else if(context.performed && escapeMenu){
+            escapeMenu = false;
+            pauseMenu.SetActive(false);
+        }
+    }
     public void Movement(InputAction.CallbackContext context)
     { //cette méthode lie à l'inpput player pour le déplacement
 
@@ -392,7 +403,7 @@ public class PlayerBehavior : MonoBehaviour
             }
         }
 
-        if (isRotating || cubeCreated)
+        if (isRotating || cubeCreated || escapeMenu)
         {
             moveVector.y = 0;
             moveVector.x = 0;
