@@ -500,7 +500,8 @@ public class PlayerBehavior : MonoBehaviour
             while(Time.time <= 2f + startTime){
                 movingPlatforme = true;
                 time += Time.deltaTime;
-                renderOverlay.material.SetFloat("_Disolve", time/2f);
+                dissolve += Time.deltaTime;
+                renderOverlay.material.SetFloat("_Disolve", dissolve/2f);
                 plateformeMove.parent.position = Vector3.Lerp(plateformeMove.parent.position, cubeOverlay.position, time/2f);
                 plateformeMove.parent.rotation = Quaternion.Lerp(plateformeMove.parent.rotation, cubeOverlay.rotation, time/2f);
                 yield return true;
